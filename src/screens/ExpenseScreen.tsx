@@ -11,6 +11,7 @@ import {
   FlatList,
   ActivityIndicator,
   ToastAndroid,
+  Pressable,
 } from 'react-native';
 
 import ratio from '../style/ratio';
@@ -37,6 +38,7 @@ const subscription: ImageSourcePropType = require('../assets/imgs/subscription.p
 const food: ImageSourcePropType = require('../assets/imgs/food.png');
 const salary: ImageSourcePropType = require('../assets/imgs/salary.png');
 const transportation: ImageSourcePropType = require('../assets/imgs/transport.png');
+const other: ImageSourcePropType = require('../assets/imgs/reset.png');
 
 const {
   widthPixel,
@@ -64,7 +66,6 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [category, setCategory] = useState<string>('');
-  const [CategoryImgSrc, setCategoryImgSrc] = useState<string>('');
   const [categoriesModalVisible, setCategoriesModalVisible] =
     useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([
@@ -72,37 +73,42 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
       id: 1,
       name: 'Shopping',
       image: shopping,
-      imgSrc: require('../assets/imgs/shopping.png'),
+      textColor: styles.yellowColor,
     },
     {
       id: 2,
       name: 'Subscription',
       image: subscription,
-      imgSrc: require('../assets/imgs/subscription.png'),
+      textColor: styles.violetColor,
     },
     {
       id: 3,
       name: 'Food',
       image: food,
-      imgSrc: require('../assets/imgs/food.png'),
+      textColor: styles.redColor,
     },
     {
       id: 4,
       name: 'Salary',
       image: salary,
-      imgSrc: require('../assets/imgs/salary.png'),
+      textColor: styles.greenColor,
     },
     {
       id: 5,
       name: 'Transportation',
       image: transportation,
-      imgSrc: require('../assets/imgs/transport.png'),
+      textColor: styles.grayColor,
+    },
+    {
+      id: 6,
+      name: 'Passive Income',
+      image: other,
+      textColor: styles.blackColor,
     },
   ]);
 
   const selectCategory = (categoryName: string, categoryImg: string) => {
     setCategory(categoryName);
-    setCategoryImgSrc(categoryImg);
     setCategoriesModalVisible(false);
   };
 
@@ -174,7 +180,6 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
         transactionType: titleHeader,
         time: timeString,
         date: dateString,
-        categoryImgSrc: CategoryImgSrc,
         bank: bankValue,
       };
       const collectionName: string = `${userEmail}`;
@@ -211,15 +216,18 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
   let dotStyle;
   switch (category) {
     case 'Shopping':
-      dotStyle = [styles.dot, styles.dotGreen];
+      dotStyle = [styles.dot, styles.dotYellow];
       break;
     case 'Subscription':
-      dotStyle = [styles.dot, styles.dotYellow];
+      dotStyle = [styles.dot, styles.dotViolet];
       break;
     case 'Food':
       dotStyle = [styles.dot, styles.dotRed];
       break;
     case 'Salary':
+      dotStyle = [styles.dot, styles.dotGreen];
+      break;
+    case 'Passive Income':
       dotStyle = [styles.dot, styles.dotBlack];
       break;
     case 'Transportation':
@@ -236,22 +244,27 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
     {
       id: 1,
       name: 'HBL',
+      textColor: styles.standColor,
     },
     {
       id: 2,
       name: 'Paypal',
+      textColor: styles.standColor,
     },
     {
       id: 3,
       name: 'JazzCash',
+      textColor: styles.standColor,
     },
     {
       id: 4,
       name: 'EasyPaisa',
+      textColor: styles.standColor,
     },
     {
       id: 5,
       name: 'UBL',
+      textColor: styles.standColor,
     },
   ]);
 
@@ -263,6 +276,8 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
   const bankModelFun = () => {
     setBankModel(!bankModel);
   };
+
+  const [touch, setTouch] = useState<boolean>(false);
 
   return (
     <>
@@ -295,8 +310,12 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
       {/* 1st Model */}
       <Modal
         backdropOpacity={0}
-        style={styles.model1}
-        onBackdropPress={toggleModelFirst}
+        style={
+          touch
+            ? // ? [styles.model1, {marginTop: pixelSizeHorizontal(300)}]
+              styles.model1_1
+            : styles.model1
+        }
         isVisible={isModalFirst}>
         <TouchableOpacity
           style={styles.closeLine}
@@ -310,7 +329,16 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
             </Text>
             <DownIcon width={32} />
           </TouchableOpacity>
-          <AddInput changeText={setDescription} placeholder={'Description'} />
+          <AddInput
+            onPressInData={() => {
+              setTouch(true);
+            }}
+            handleBlur={() => {
+              setTouch(false);
+            }}
+            changeText={setDescription}
+            placeholder={'Description'}
+          />
           <AttachInputDoc handleFunc={toggleModal} />
         </View>
         <BtnLarge handleFunc={toggleModelSecond} text={'Continue'} />
@@ -387,41 +415,41 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
         transparent={true}
         visible={categoriesModalVisible}
         onRequestClose={toggleCategoryModal}>
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={categories}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                style={styles.categoryItemContainer}
-                onPress={() => selectCategory(item.name, item.imgSrc)}>
-                <Image source={item.image} />
-                <Text style={styles.categoryItemText}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+        <FlatList
+          data={categories}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              style={styles.categoryItemContainer}
+              onPress={() => selectCategory(item.name)}>
+              <Image source={item.image} />
+              <Text style={[styles.categoryItemText, item.textColor]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
       </Modal>
 
       {/* Bank Model */}
       <Modal
-        style={styles.model3}
+        style={[styles.model3, {marginTop: pixelSizeVertical(525)}]}
         transparent={true}
         visible={bankModel}
         onRequestClose={bankModelFun}>
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={bank}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                style={styles.categoryItemContainer}
-                onPress={() => selectBank(item.name)}>
-                <Text style={styles.categoryItemText}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+        <FlatList
+          data={bank}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              style={styles.categoryItemContainer}
+              onPress={() => selectBank(item.name)}>
+              <Text style={[styles.categoryItemText, {color: COLOR.baseLight}]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
       </Modal>
 
       {/* Image, File and Open Camera Model */}
@@ -472,6 +500,19 @@ const styles = StyleSheet.create({
     width: '100%',
     height: heightPixel(191),
     marginTop: pixelSizeHorizontal(430),
+    marginBottom: pixelSizeHorizontal(1),
+    marginLeft: pixelSizeVertical(1),
+    padding: pixelSizeHorizontal(16),
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  model1_1: {
+    backgroundColor: COLOR.white,
+    borderTopEndRadius: widthPixel(24),
+    borderTopStartRadius: widthPixel(24),
+    width: '100%',
+    height: heightPixel(191),
+    marginTop: pixelSizeHorizontal(300),
     marginBottom: pixelSizeHorizontal(1),
     marginLeft: pixelSizeVertical(1),
     padding: pixelSizeHorizontal(16),
@@ -545,20 +586,44 @@ const styles = StyleSheet.create({
     width: widthPixel(14),
     borderRadius: widthPixel(100),
   },
-  dotGreen: {
-    backgroundColor: COLOR.green,
-  },
   dotYellow: {
     backgroundColor: COLOR.yellow,
   },
-  dotBlack: {
-    backgroundColor: COLOR.black,
+  dotViolet: {
+    backgroundColor: COLOR.violet,
   },
   dotRed: {
     backgroundColor: COLOR.black,
   },
+  dotGreen: {
+    backgroundColor: COLOR.green,
+  },
+  dotBlack: {
+    backgroundColor: COLOR.black,
+  },
   dotGray: {
-    backgroundColor: COLOR.borderLight,
+    backgroundColor: COLOR.baseLight,
+  },
+  yellowColor: {
+    color: COLOR.yellow,
+  },
+  violetColor: {
+    color: COLOR.violet,
+  },
+  redColor: {
+    color: COLOR.red,
+  },
+  greenColor: {
+    color: COLOR.green,
+  },
+  blackColor: {
+    color: COLOR.black,
+  },
+  grayColor: {
+    color: COLOR.baseLight,
+  },
+  standColor: {
+    color: COLOR.black,
   },
   subcription: {
     fontSize: fontPixel(14),
@@ -644,12 +709,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: fontPixel(1),
+    borderRadius: widthPixel(10),
+    borderColor: COLOR.borderLight,
+    padding: widthPixel(5),
+    marginVertical: pixelSizeVertical(2),
   },
   categoryItemText: {
-    color: 'white',
     fontSize: 24,
     fontWeight: '600',
-    color: COLOR.baseLight,
-    marginVertical: pixelSizeVertical(25),
   },
 });

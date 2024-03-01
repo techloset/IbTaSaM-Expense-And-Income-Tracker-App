@@ -33,7 +33,7 @@ interface TabNavigatorProps {
 }
 
 const TabNavigator: React.FC<TabNavigatorProps> = ({navigation}) => {
-  const [show, setShow] = useState<boolean>(true);
+  const [show, setShow] = useState<boolean>(false);
 
   const toggleShow = () => {
     setShow(!show);

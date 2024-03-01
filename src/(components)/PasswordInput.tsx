@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
 import ratio from '../style/ratio';
 import {COLOR} from '../style/GlobalStyles';
 import EyeIcon from '../assets/icons/eye.svg';
@@ -10,18 +10,24 @@ interface PasswordInputProps {
   value: string;
   changeText: (text: string) => void;
 }
-
 const PasswordInput: React.FC<PasswordInputProps> = ({value, changeText}) => {
+  const [scure, setScure] = useState<boolean>(true);
   return (
     <View style={styles.inputContainer}>
       <TextInput
         style={styles.input}
+        secureTextEntry={scure}
         placeholderTextColor={COLOR.baseLight}
         placeholder="Password"
         value={value}
         onChangeText={changeText}
       />
-      <EyeIcon />
+      <TouchableOpacity
+        onPress={() => {
+          setScure(!scure);
+        }}>
+        <EyeIcon />
+      </TouchableOpacity>
     </View>
   );
 };

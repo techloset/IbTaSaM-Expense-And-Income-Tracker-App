@@ -7,18 +7,29 @@ interface AddInputProps {
   placeholder: string;
   value: string;
   changeText: (text: string) => void;
+  onPressInData: (text: string) => void;
+  handleBlur: (text: string) => void;
 }
 
 const {widthPixel, fontPixel, heightPixel, pixelSizeVertical} = ratio;
 
-const AddInput: FC<AddInputProps> = ({placeholder, value, changeText}) => {
+const AddInput: FC<AddInputProps> = ({
+  placeholder,
+  value,
+  changeText,
+  onPressInData,
+  handleBlur,
+}) => {
   return (
     <TextInput
       style={styles.input}
+      selectionColor={COLOR.green}
       placeholderTextColor={COLOR.baseLight}
       placeholder={placeholder}
       value={value}
       onChangeText={changeText}
+      onFocus={onPressInData}
+      onBlur={handleBlur}
     />
   );
 };

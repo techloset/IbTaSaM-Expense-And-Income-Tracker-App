@@ -8,6 +8,13 @@ import {useNavigation} from '@react-navigation/native';
 
 const {fontPixel, pixelSizeVertical, pixelSizeHorizontal} = ratio;
 
+const shopping: ImageSourcePropType = require('../assets/imgs/shopping.png');
+const subscription: ImageSourcePropType = require('../assets/imgs/subscription.png');
+const food: ImageSourcePropType = require('../assets/imgs/food.png');
+const salary: ImageSourcePropType = require('../assets/imgs/salary.png');
+const transportation: ImageSourcePropType = require('../assets/imgs/transport.png');
+const other: ImageSourcePropType = require('../assets/imgs/reset.png');
+
 const Transactions = ({data}) => {
   const navigation = useNavigation();
   return (
@@ -23,7 +30,47 @@ const Transactions = ({data}) => {
             }}
             style={styles.recentTransactionContainer}>
             <View style={styles.left}>
-              <Image source={item.categoryImgSrc} />
+              {item.category == 'Shopping' ? (
+                <>
+                  <Image source={shopping} />
+                </>
+              ) : (
+                  <>
+                    <Image source={other} />
+                  </>
+                ) && item.category == 'Subscription' ? (
+                <>
+                  <Image source={subscription} />
+                </>
+              ) : (
+                  <>
+                    <Image source={other} />
+                  </>
+                ) && item.category == 'Food' ? (
+                <>
+                  <Image source={food} />
+                </>
+              ) : (
+                  <>
+                    <Image source={other} />
+                  </>
+                ) && item.category == 'Salary' ? (
+                <>
+                  <Image source={salary} />
+                </>
+              ) : (
+                  <>
+                    <Image source={other} />
+                  </>
+                ) && item.category == 'Transportation' ? (
+                <>
+                  <Image source={transportation} />
+                </>
+              ) : (
+                <>
+                  <Image source={other} />
+                </>
+              )}
               <View style={styles.leftContent}>
                 <Text style={styles.title}>{item.category}</Text>
                 <Text style={styles.description}>{item.description}</Text>
