@@ -11,7 +11,6 @@ import {
   FlatList,
   ActivityIndicator,
   ToastAndroid,
-  Pressable,
 } from 'react-native';
 
 import ratio from '../style/ratio';
@@ -149,8 +148,8 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
 
   const [money, setMoney] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  
   const now = new Date();
-
   const timeString = now.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
@@ -312,7 +311,7 @@ const ExpenseScreen: React.FC<ExpenseScreenProps> = ({route, navigation}) => {
         backdropOpacity={0}
         style={
           touch
-            ? // ? [styles.model1, {marginTop: pixelSizeHorizontal(300)}]
+            ? 
               styles.model1_1
             : styles.model1
         }

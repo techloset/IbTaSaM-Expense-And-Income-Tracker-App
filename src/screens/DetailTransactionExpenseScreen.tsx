@@ -7,6 +7,8 @@ import {
   StatusBar,
   Image,
   ToastAndroid,
+  TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import {ImageSourcePropType} from 'react-native';
 const attachmentImg: ImageSourcePropType = require('../assets/imgs/attachment.png');
@@ -20,6 +22,9 @@ import {db} from '../config/firebase';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
 import SCREENS from '../navigation/Screens';
+import Modal from 'react-native-modal';
+import AddInput from '../(components)/AddInput';
+import DownIcon from '../assets/icons/down.svg';
 
 const {
   widthPixel,
@@ -58,6 +63,7 @@ const DetailTransactionExpenseScreen: React.FC<
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  const userEmail: string = auth().currentUser?.email || '';
 
   const toggleModalSuccess = () => {
     setModalVisible(false);
@@ -72,7 +78,6 @@ const DetailTransactionExpenseScreen: React.FC<
   };
 
   const deleteTransaction = async () => {
-    const userEmail: string = auth().currentUser?.email || '';
     try {
       db.collection('Users')
         .doc(userEmail)
@@ -91,8 +96,117 @@ const DetailTransactionExpenseScreen: React.FC<
     }
   };
 
+  const [isModalFirst, setModalFirst] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [updateCategory, setUpdateCategory] = useState<string>('');
+  const [updateDescription, setUpdateDescription] = useState<string>('');
+  const [updateMoney, setUpdateMoney] = useState<string>('');
+
+  const now = new Date();
+  const timeString = now.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+  const dateString = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const updateTransaction = async () => {
+    // console.log('DE');
+
+    if (!updateCategory) {
+      showToast('Enter Category');
+      return;
+    }
+
+    if (!updateDescription) {
+      showToast('Enter Description');
+      return;
+    }
+
+    if (!updateMoney) {
+      showToast('Enter Money');
+      return;
+    }
+
+    try {
+      db.collection('Users')
+        .doc(userEmail)
+        .collection('UsersTransation')
+        .doc(item.id)
+        .update({
+          category: updateCategory,
+          description: updateDescription,
+          money: updateMoney,
+          updateTime: timeString,
+          updateDate: dateString,
+        });
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  };
+  const updateSuccess = () => {
+    setTimeout(() => {
+      navigation.navigate(SCREENS.DETAIL_TRANSACTION_EXPENSE);
+    }, 2000);
+  };
+
+  const [touch, setTouch] = useState<boolean>(false);
   return (
     <>
+      <Modal
+        backdropOpacity={0}
+        style={touch ? styles.model1_1 : styles.model1}
+        isVisible={isModalFirst}>
+        <TouchableOpacity
+          style={styles.closeLine}
+          onPress={() => {
+            setModalFirst(false);
+          }}></TouchableOpacity>
+        <View style={styles.Box1Inputs}>
+          <Text>Add Category</Text>
+          <AddInput
+            onPressInData={() => {
+              setTouch(true);
+            }}
+            handleBlur={() => {
+              setTouch(false);
+            }}
+            placeholder={item.category}
+            changeText={setUpdateCategory}
+          />
+          <Text>Add Description</Text>
+          <AddInput
+            onPressInData={() => {
+              setTouch(true);
+            }}
+            handleBlur={() => {
+              setTouch(false);
+            }}
+            changeText={setUpdateDescription}
+            placeholder={item.description}
+          />
+          <Text>Add Money</Text>
+          <TextInput
+            style={[styles.price]}
+            onChangeText={text => setUpdateMoney(text)}
+            keyboardType="numeric"
+            onFocus={() => {
+              setTouch(true);
+            }}
+            onBlur={() => {
+              setTouch(false);
+            }}
+            placeholder={item.money}
+          />
+        </View>
+        <BtnLarge handleFunc={updateSuccess} text={'Update Transaction'} />
+      </Modal>
+
       <SafeAreaView style={styles.container}>
         <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
         <View
@@ -137,7 +251,12 @@ const DetailTransactionExpenseScreen: React.FC<
           <Text style={styles.comText}>Attachment</Text>
           <Image source={attachmentImg} />
           <View style={styles.editBtn}>
-            <BtnLarge text={'Edit'} />
+            <BtnLarge
+              text={'Edit'}
+              handleFunc={() => {
+                setModalFirst(true);
+              }}
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -250,5 +369,70 @@ const styles = StyleSheet.create({
   },
   editBtn: {
     marginTop: pixelSizeVertical(115),
+  },
+  model1: {
+    backgroundColor: COLOR.white,
+    borderTopEndRadius: widthPixel(24),
+    borderTopStartRadius: widthPixel(24),
+    width: '100%',
+    height: heightPixel(191),
+    marginTop: pixelSizeHorizontal(420),
+    marginBottom: pixelSizeHorizontal(1),
+    marginLeft: pixelSizeVertical(1),
+    padding: pixelSizeHorizontal(16),
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  model1_1: {
+    backgroundColor: COLOR.white,
+    borderTopEndRadius: widthPixel(24),
+    borderTopStartRadius: widthPixel(24),
+    width: '100%',
+    height: heightPixel(191),
+    marginTop: pixelSizeHorizontal(180),
+    marginBottom: pixelSizeHorizontal(1),
+    marginLeft: pixelSizeVertical(1),
+    padding: pixelSizeHorizontal(16),
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  price: {
+    height: heightPixel(56),
+    width: widthPixel(343),
+    borderWidth: fontPixel(1),
+    borderColor: COLOR.baseLight,
+    borderRadius: widthPixel(16),
+    fontSize: fontPixel(18),
+    alignSelf: 'center',
+    paddingStart: pixelSizeVertical(16),
+    color: COLOR.black,
+  },
+  categoriesTextContainer: {
+    height: heightPixel(56),
+    width: widthPixel(343),
+    borderWidth: fontPixel(1),
+    borderColor: COLOR.baseLight,
+    borderRadius: widthPixel(16),
+    alignSelf: 'center',
+    paddingStart: pixelSizeVertical(16),
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: pixelSizeHorizontal(10),
+  },
+  categoryText: {
+    fontSize: fontPixel(16),
+  },
+  Box1Inputs: {
+    gap: 5,
+    marginTop: pixelSizeVertical(30),
+    marginBottom: pixelSizeVertical(15),
+  },
+  closeLine: {
+    borderWidth: widthPixel(4),
+    width: widthPixel(36),
+    borderColor: COLOR.baseLight,
+    borderRadius: widthPixel(50),
+    alignSelf: 'center',
   },
 });
