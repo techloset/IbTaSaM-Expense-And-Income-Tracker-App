@@ -1,20 +1,17 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import GoogleIcon from '../assets/icons/google.svg';
 import ratio from '../style/ratio';
 import {COLOR} from '../style/GlobalStyles';
 
 const {pixelSizeVertical, widthPixel, heightPixel, fontPixel} = ratio;
 
-interface GoogleLinkProps {
-  handleFunc: () => void;
-}
-const GoogleLink: React.FC<GoogleLinkProps> = ({handleFunc}) => {
+const GoogleLink: React.FC = () => {
   return (
-    <TouchableOpacity onPress={handleFunc} style={styles.inputContainer}>
+    <View style={styles.inputContainer}>
       <GoogleIcon />
       <Text style={styles.signText}>Sign Up with Google</Text>
-    </TouchableOpacity>
+    </View>
   );
 };
 

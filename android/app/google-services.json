@@ -12,20 +12,7 @@
           "package_name": "com.expenseandincometracker"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "316388705887-hc1kll9aa39ea29moqc7j2ftodtapovr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.expenseandincometracker",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "316388705887-pb57rhm1ujbiiq9oi97v5v2e1v7mc728.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBezpVRoiOL1aLDrVQdwHHXa4vCQ8hnG4U"
@@ -33,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "316388705887-pb57rhm1ujbiiq9oi97v5v2e1v7mc728.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
