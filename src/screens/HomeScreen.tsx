@@ -9,6 +9,7 @@ import {
   ScrollView,
   ViewStyle,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import {ImageSourcePropType} from 'react-native';
 
@@ -19,11 +20,8 @@ import Notifi from '../assets/icons/notifiaction.svg';
 import Income from '../assets/icons/income.svg';
 import Expense from '../assets/icons/expense.svg';
 import HomeFilter from '../(components)/HomeFilter';
-import RecentTransaction from '../(components)/RecentTransaction';
 import LineChartComponent from '../(components)/LineChartComponent';
 import SmallDownBtn from '../(components)/SmallDownBtn';
-import {db} from '../config/firebase';
-import auth from '@react-native-firebase/auth';
 import Transactions from '../(components)/Transactions';
 
 const {
@@ -75,12 +73,15 @@ export const selectTransactionsData = createSelector(
   },
 );
 const HomeScreen: React.FC = ({navigation}) => {
-  // Use the memoized selector inside the hook
   const {transactionData} = useSelector(selectTransactionsData);
   const financeSummary = useSelector(selectFinanceSummary);
+
+  const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   useEffect(() => {
+    setLoading(true);
     dispatch(fetchTransactions());
+    setLoading(false);
   }, [dispatch]);
 
   return (
@@ -98,7 +99,9 @@ const HomeScreen: React.FC = ({navigation}) => {
         </View>
       </View>
       <Text style={styles.accBala}>Account Balance</Text>
-      <Text style={styles.balance}>${financeSummary.balance}</Text>
+      <Text style={styles.balance}>
+        ${financeSummary.balance < 0 ? ' 0' : financeSummary.balance}
+      </Text>
       <View style={styles.twoCards}>
         <View style={styles.card1}>
           <Income />
@@ -127,7 +130,11 @@ const HomeScreen: React.FC = ({navigation}) => {
               <Text style={styles.seeBtnText}>See All</Text>
             </TouchableOpacity>
           </View>
-          <Transactions data={transactionData} />
+          {loading ? (
+            <ActivityIndicator size="small" color={COLOR.violet} />
+          ) : (
+            <Transactions data={transactionData} />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

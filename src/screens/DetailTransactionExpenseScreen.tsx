@@ -59,6 +59,7 @@ const DetailTransactionExpenseScreen: React.FC<
 
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [isModalSuccess, setModalSuccess] = useState<boolean>(false);
+  const [isModalUpdate, setModalUpdate] = useState<boolean>(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -69,7 +70,7 @@ const DetailTransactionExpenseScreen: React.FC<
     setModalVisible(false);
     setModalSuccess(!isModalSuccess);
     setTimeout(() => {
-      navigation.navigate(SCREENS.TRANSACTION);
+      navigation.navigate(SCREENS.TAB_NAVIGATOR);
     }, 2000);
   };
 
@@ -97,7 +98,6 @@ const DetailTransactionExpenseScreen: React.FC<
   };
 
   const [isModalFirst, setModalFirst] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [updateCategory, setUpdateCategory] = useState<string>('');
   const [updateDescription, setUpdateDescription] = useState<string>('');
   const [updateMoney, setUpdateMoney] = useState<string>('');
@@ -115,8 +115,6 @@ const DetailTransactionExpenseScreen: React.FC<
     day: 'numeric',
   });
   const updateTransaction = async () => {
-    // console.log('DE');
-
     if (!updateCategory) {
       showToast('Enter Category');
       return;
@@ -144,14 +142,18 @@ const DetailTransactionExpenseScreen: React.FC<
           updateTime: timeString,
           updateDate: dateString,
         });
+      showToast('Transaction Successfully Updated');
+      updateSuccess();
     } catch (error) {
       setLoading(false);
       console.error(error);
     }
   };
   const updateSuccess = () => {
+    setModalFirst(false);
+    setModalUpdate(true);
     setTimeout(() => {
-      navigation.navigate(SCREENS.DETAIL_TRANSACTION_EXPENSE);
+      navigation.navigate(SCREENS.TRANSACTION);
     }, 2000);
   };
 
@@ -204,7 +206,7 @@ const DetailTransactionExpenseScreen: React.FC<
             placeholder={item.money}
           />
         </View>
-        <BtnLarge handleFunc={updateSuccess} text={'Update Transaction'} />
+        <BtnLarge handleFunc={updateTransaction} text={'Update Transaction'} />
       </Modal>
 
       <SafeAreaView style={styles.container}>
@@ -270,6 +272,10 @@ const DetailTransactionExpenseScreen: React.FC<
       <SuccessfullModel
         isVisible={isModalSuccess}
         description={'Transaction has been successfully removed'}
+      />
+      <SuccessfullModel
+        isVisible={isModalUpdate}
+        description={'Transaction has been successfully Updated'}
       />
     </>
   );

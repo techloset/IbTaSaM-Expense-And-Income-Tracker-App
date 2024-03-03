@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import {COLOR} from '../../style/GlobalStyles';
 import GoogleLink from '../../(components)/GoogleLink';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const {
   widthPixel,
@@ -86,6 +87,32 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
     setShowView(!showView);
   };
 
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '410122792339-986og3kdl5im005jcjr1o4a9rnls27b4.apps.googleusercontent.com',
+    });
+  }, []);
+  const signInWithGoogle = () => {
+    console.log('noew');
+
+    // try {
+    //   await GoogleSignin.hasPlayServices();
+    //   const usrInfo = await GoogleSignin.signIn();
+    //   setUserInfo({usrInfo});
+    // } catch (error) {
+    //   if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+    //     // user cancelled the login flow
+    //   } else if (error.code === statusCodes.IN_PROGRESS) {
+    //     // operation (e.g. sign in) is in progress already
+    //   } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+    //     // play services not available or outdated
+    //   } else {
+    //     // some other error happened
+    //   }
+    // }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
@@ -129,7 +156,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
         handleFunc={() => HandleSignUp()}
       />
       <Text style={styles.orText}>or</Text>
-      <GoogleLink />
+      <GoogleLink handleFunc={() => signInWithGoogle()} />
       <View style={styles.noAccText}>
         <TouchableOpacity
           onPress={() => navigation.navigate(SCREENS.TAB_NAVIGATOR)}>
