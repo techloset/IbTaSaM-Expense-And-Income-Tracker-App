@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   Alert,
   ToastAndroid,
-  TouchableOpacity,
 } from 'react-native';
 import BtnLarge from '../../(components)/BtnLarge';
 import SCREENS from '../../navigation/Screens';
@@ -131,10 +130,9 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
       <Text style={styles.orText}>or</Text>
       <GoogleLink />
       <View style={styles.noAccText}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(SCREENS.TAB_NAVIGATOR)}>
+        <View>
           <Text style={styles.accText}>Already have an account?</Text>
-        </TouchableOpacity>
+        </View>
         <Text
           style={styles.signText}
           onPress={() => navigation.navigate(SCREENS.LOGIN)}>

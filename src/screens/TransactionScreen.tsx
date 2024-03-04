@@ -8,12 +8,10 @@ import {
   TouchableOpacity,
   ViewStyle,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {COLOR} from '../style/GlobalStyles';
 import ratio from '../style/ratio';
-import YesterDayTransactionData from '../library/YesterDayTransactionData';
 import FinancialReport from '../(components)/FinancialReport';
 import Right from '../assets/icons/right.svg';
 import Filter from '../assets/icons/filter.svg';
@@ -96,10 +94,6 @@ const TransactionScreen: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.recentTransactionText}>Today</Text>
           </View>
           <Transactions data={transactionData} />
-          <View style={styles.recentTransactionHeader}>
-            <Text style={styles.recentTransactionText}>Yesterday</Text>
-          </View>
-          <Transactions data={YesterDayTransactionData} />
         </ScrollView>
       </SafeAreaView>
 

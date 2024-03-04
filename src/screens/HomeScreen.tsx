@@ -99,9 +99,7 @@ const HomeScreen: React.FC = ({navigation}) => {
         </View>
       </View>
       <Text style={styles.accBala}>Account Balance</Text>
-      <Text style={styles.balance}>
-        ${financeSummary.balance < 0 ? ' 0' : financeSummary.balance}
-      </Text>
+      <Text style={styles.balance}>${financeSummary.balance}</Text>
       <View style={styles.twoCards}>
         <View style={styles.card1}>
           <Income />
